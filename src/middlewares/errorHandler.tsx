@@ -1,6 +1,7 @@
 import type { Context } from "hono";
 import { HTTPException } from "hono/http-exception";
 import type { Env } from "../types/env";
+import { NotFound } from "../pages/NotFound";
 
 /**
  * 全局错误处理中间件
@@ -28,11 +29,5 @@ export async function errorHandler(err: Error, c: Context<Env>) {
  * 404 处理中间件
  */
 export async function notFoundHandler(c: Context<Env>) {
-  return c.json(
-    {
-      error: "Not Found",
-      path: c.req.path,
-    },
-    404
-  );
+  return c.html(<NotFound />);
 }
