@@ -20,6 +20,11 @@ app.get("/health", (c) => {
   return c.html(<Index title="Index" time={new Date().toISOString()} />);
 });
 
+import { SSEPage } from "./pages/SSEPage";
+app.get("/demo/sse", (c) => {
+  return c.html(<SSEPage />);
+});
+
 // API 路由
 app.route("/api", routes);
 
