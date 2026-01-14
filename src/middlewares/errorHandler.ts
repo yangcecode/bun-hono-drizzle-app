@@ -1,26 +1,27 @@
-import type { Context, Next } from "hono";
+import type { Context } from "hono";
+import { HTTPException } from "hono/http-exception";
 import type { Env } from "../types/env";
 
 /**
  * 全局错误处理中间件
  */
-export async function errorHandler(c: Context<Env>, next: Next) {
-  try {
-    await next();
-  } catch (error) {
-    console.error("[Error]", error);
+export async function errorHandler(err: Error, c: Context<Env>) {
+  console.error("[Error]", err);
 
-    if (error instanceof Error) {
-      return c.json(
-        {
-          error: error.message,
-        },
-        500
-      );
-    }
-
-    return c.json({ error: "Internal Server Error" }, 500);
+  if (err instanceof HTTPException) {
+    return err.getResponse();
   }
+
+  if (err instanceof Error) {
+    return c.json(
+      {
+        error: err.message,
+      },
+      500
+    );
+  }
+
+  return c.json({ error: "Internal Server Error" }, 500);
 }
 
 /**

@@ -12,7 +12,7 @@ const app = new Hono<Env>();
 // ==================== 中间件 ====================
 app.use("*", logger());
 app.use("*", cors());
-app.use("*", errorHandler);
+app.onError(errorHandler);
 
 // ==================== 路由 ====================
 // 健康检查

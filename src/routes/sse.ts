@@ -17,7 +17,7 @@ sse.get("/stream", async (c) => {
       await stream.sleep(1000);
 
       // Stop after 10 seconds for demo purposes to avoid infinite loop resource usage in dev
-      if (id > 10) {
+      if (id > 100) {
         break;
       }
     }
