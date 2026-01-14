@@ -1,0 +1,19 @@
+/* Basic styles for the Index page */
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+  margin: 0;
+  padding: 2rem;
+  background-color: #f9f9f9;
+}
+
+h1 {
+  color: #333;
+}
+
+.content {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

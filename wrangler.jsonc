@@ -1,0 +1,51 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "bun-hono-drizzle-app",
+	"main": "src/index.tsx",
+	"compatibility_date": "2026-01-13",
+	// Cloudflare D1 Database binding
+	"d1_databases": [
+		{
+			"binding": "my_db",
+			"database_name": "my-db",
+			"database_id": "b19ec28d-6c72-4f90-b5aa-b8ad1d254784",
+			"migrations_dir": "drizzle"
+		}
+	],
+	"assets": {
+		"directory": "public",
+		"binding": "ASSETS"
+	}
+	// "compatibility_flags": [
+	//   "nodejs_compat"
+	// ],
+	// "vars": {
+	//   "MY_VAR": "my-variable"
+	// },
+	// "kv_namespaces": [
+	//   {
+	//     "binding": "MY_KV_NAMESPACE",
+	//     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+	//   }
+	// ],
+	// "r2_buckets": [
+	//   {
+	//     "binding": "MY_BUCKET",
+	//     "bucket_name": "my-bucket"
+	//   }
+	// ],
+	// "d1_databases": [
+	//   {
+	//     "binding": "MY_DB",
+	//     "database_name": "my-database",
+	//     "database_id": ""
+	//   }
+	// ],
+	// "ai": {
+	//   "binding": "AI"
+	// },
+	// "observability": {
+	//   "enabled": true,
+	//   "head_sampling_rate": 1
+	// }
+}
