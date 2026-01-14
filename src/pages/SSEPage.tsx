@@ -1,5 +1,5 @@
-import { html } from "hono/html";
-import { Layout } from "../layouts/Layout";
+import { html } from 'hono/html';
+import { Layout } from '../layouts/Layout';
 
 export const SSEPage = () => {
   return (
@@ -15,23 +15,23 @@ export const SSEPage = () => {
       {html`
         <script>
           (function () {
-            const list = document.getElementById("messages");
-            const evtSource = new EventSource("/api/sse/stream");
+            const list = document.getElementById('messages');
+            const evtSource = new EventSource('/api/sse/stream');
 
-            evtSource.addEventListener("time-update", (event) => {
-              const li = document.createElement("li");
+            evtSource.addEventListener('time-update', (event) => {
+              const li = document.createElement('li');
               li.textContent = event.data;
-              li.style.padding = "5px 0";
-              li.style.borderBottom = "1px solid #eee";
+              li.style.padding = '5px 0';
+              li.style.borderBottom = '1px solid #eee';
               list.appendChild(li);
               list.scrollTop = list.scrollHeight;
             });
 
             evtSource.onerror = (err) => {
-              console.error("EventSource failed:", err);
-              const li = document.createElement("li");
-              li.textContent = "Connection lost or error occurred.";
-              li.style.color = "red";
+              console.error('EventSource failed:', err);
+              const li = document.createElement('li');
+              li.textContent = 'Connection lost or error occurred.';
+              li.style.color = 'red';
               list.appendChild(li);
               evtSource.close();
             };

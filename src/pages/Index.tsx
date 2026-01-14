@@ -1,5 +1,5 @@
-import { css } from "hono/css";
-import { Layout } from "../layouts";
+import { css } from 'hono/css';
+import { Layout } from '../layouts';
 
 const contentClass = css`
   background-color: white;

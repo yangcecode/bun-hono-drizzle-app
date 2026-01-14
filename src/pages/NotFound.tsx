@@ -1,5 +1,5 @@
-import { css } from "hono/css";
-import { Layout } from "../layouts";
+import { css } from 'hono/css';
+import { Layout } from '../layouts';
 
 const containerClass = css`
   display: flex;
@@ -35,7 +35,9 @@ const buttonClass = css`
   text-decoration: none;
   font-size: 1.1rem;
   border-radius: 5px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
   &:hover {
@@ -59,9 +61,7 @@ export const NotFound = () => {
       <div class={containerClass}>
         <div class={illustrationClass}>🚧</div>
         <h1 class={titleClass}>404</h1>
-        <p class={subtitleClass}>
-          Oops! The page you are looking for does not exist.
-        </p>
+        <p class={subtitleClass}>Oops! The page you are looking for does not exist.</p>
         <a href="/" class={buttonClass}>
           Go Back Home
         </a>

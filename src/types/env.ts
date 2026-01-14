@@ -10,10 +10,13 @@ export type Bindings = {
   // AI: Ai;
 };
 
+import type { Database } from '../db';
+
 /**
  * Hono 应用上下文变量类型
  */
 export type Variables = {
+  db: Database;
   // 在此添加自定义上下文变量
   // user: User;
 };

@@ -1,5 +1,5 @@
-import type { FC } from "hono/jsx";
-import { Style } from "hono/css";
+import type { FC } from 'hono/jsx';
+import { Style } from 'hono/css';
 
 export const Layout: FC = (props) => {
   return (

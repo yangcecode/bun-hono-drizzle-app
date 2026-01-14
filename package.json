@@ -8,15 +8,22 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "wrangler d1 migrations apply my_db --remote",
     "db:migrate:local": "wrangler d1 migrations apply my_db --local",
-    "typecheck": "bunx tsc --noEmit"
+    "typecheck": "bunx tsc --noEmit",
+    "lint": "eslint src --ext .ts,.tsx",
+    "format": "prettier --write src/**/*.{ts,tsx}"
   },
-  "dependencies": { 
+  "dependencies": {
     "drizzle-kit": "^0.31.8",
     "drizzle-orm": "^0.45.1",
-    "hono": "^4.11.4"
+    "hono": "^4.11.4",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260113.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
     "wrangler": "^4.4.0"
   }
 }
