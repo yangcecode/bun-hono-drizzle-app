@@ -9,20 +9,21 @@ import { NotFound } from '../pages/NotFound';
 export async function errorHandler(err: Error, c: Context<Env>) {
   console.error('[Error]', err);
 
+  // 如果是 Hono 的 HTTPException，直接返回 response
   if (err instanceof HTTPException) {
     return err.getResponse();
   }
 
-  if (err instanceof Error) {
-    return c.json(
-      {
-        error: err.message,
-      },
-      500
-    );
-  }
+  // 区分环境：生产环境隐藏错误详情
+  const isProduction = c.env.ENVIRONMENT === 'production';
+  const errorMessage = isProduction ? 'Internal Server Error' : err.message;
 
-  return c.json({ error: 'Internal Server Error' }, 500);
+  return c.json(
+    {
+      error: errorMessage,
+    },
+    500
+  );
 }
 
 /**

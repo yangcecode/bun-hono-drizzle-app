@@ -4,6 +4,8 @@
 export type Bindings = {
   /** D1 数据库绑定 */
   my_db: D1Database;
+  /** 运行环境 */
+  ENVIRONMENT: string;
   // 在此添加其他绑定
   // MY_KV: KVNamespace;
   // MY_BUCKET: R2Bucket;
