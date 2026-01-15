@@ -15,13 +15,14 @@
 	"assets": {
 		"directory": "public",
 		"binding": "ASSETS"
-	}
-	// "compatibility_flags": [
-	//   "nodejs_compat"
-	// ],
-	// "vars": {
-	//   "MY_VAR": "my-variable"
-	// },
+	},
+	"compatibility_flags": [
+	  "nodejs_compat"
+	],
+	"vars": {
+		"ENVIRONMENT": "production"
+		// "MY_VAR": "my-variable"
+	},
 	// "kv_namespaces": [
 	//   {
 	//     "binding": "MY_KV_NAMESPACE",
@@ -41,9 +42,9 @@
 	//     "database_id": ""
 	//   }
 	// ],
-	// "ai": {
-	//   "binding": "AI"
-	// },
+	"ai": {
+	  "binding": "AI"
+	},
 	// "observability": {
 	//   "enabled": true,
 	//   "head_sampling_rate": 1

@@ -9,7 +9,7 @@ export type Bindings = {
   // 在此添加其他绑定
   // MY_KV: KVNamespace;
   // MY_BUCKET: R2Bucket;
-  // AI: Ai;
+  AI: Ai;
 };
 
 import type { Database } from '../db';
