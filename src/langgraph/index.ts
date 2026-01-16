@@ -1,14 +1,7 @@
 import { ChatCloudflareWorkersAI } from '../lib/ChatCloudflareWorkersAI';
 import * as z from 'zod';
-import {
-  StateGraph,
-  START,
-  END,
-  MemorySaver,
-  RetryPolicy,
-  Command,
-  interrupt,
-} from '@langchain/langgraph';
+import { StateGraph, START, END, RetryPolicy, Command, interrupt } from '@langchain/langgraph';
+import type { BaseCheckpointSaver } from '@langchain/langgraph-checkpoint';
 import { HumanMessage } from '@langchain/core/messages';
 const EmailClassificationSchema = z.object({
   intent: z.enum(['question', 'bug', 'billing', 'feature', 'complex']),
@@ -40,7 +33,7 @@ const EmailAgentState = z.object({
 export type EmailAgentStateType = z.infer<typeof EmailAgentState>;
 export type EmailClassificationType = z.infer<typeof EmailClassificationSchema>;
 // Define the structure for email classification
-export async function kefu(llm: ChatCloudflareWorkersAI) {
+export async function kefu(llm: ChatCloudflareWorkersAI, checkpointer?: BaseCheckpointSaver) {
   async function readEmail(state: EmailAgentStateType) {
     console.log(`Processing email: ${state.emailContent}`);
     const thinking =
@@ -93,9 +86,9 @@ Respond with the JSON only:`;
     thinking += `📝 发送给 AI 的提示词:\n"${classificationPrompt.substring(0, 200)}..."\n\n`;
 
     const response = await llm.invoke([new HumanMessage(classificationPrompt)]);
-    const responseText = response.content.toString().trim();
+    const responseText = (response.content?.toString() || '').trim();
 
-    thinking += `💭 AI 原始回复:\n${responseText}\n\n`;
+    thinking += `💭 AI 原始回复:\n${responseText || '(空回复)'}\n\n`;
 
     let classification: EmailClassificationType;
     try {
@@ -117,9 +110,7 @@ Respond with the JSON only:`;
 
     let nextNode: 'searchDocumentation' | 'humanReview' | 'draftResponse' | 'bugTracking';
 
-    if (classification.intent === 'billing' || classification.urgency === 'critical') {
-      nextNode = 'humanReview';
-    } else if (classification.intent === 'question' || classification.intent === 'feature') {
+    if (classification.intent === 'question' || classification.intent === 'feature') {
       nextNode = 'searchDocumentation';
     } else if (classification.intent === 'bug') {
       nextNode = 'bugTracking';
@@ -225,14 +216,15 @@ Guidelines:
     thinking += `📝 发送给 AI 的提示词:\n"${draftPrompt.substring(0, 300)}..."\n\n`;
 
     const response = await llm.invoke([new HumanMessage(draftPrompt)]);
-    const responseText = response.content.toString();
+    const responseText = response.content?.toString() || '';
 
-    thinking += `💭 AI 生成的回复:\n${responseText.substring(0, 200)}...\n\n`;
+    thinking += `💭 AI 生成的回复:\n${responseText.substring(0, 200) || '(空回复)'}...\n\n`;
 
     const needsReview =
       classification.urgency === 'high' ||
       classification.urgency === 'critical' ||
-      classification.intent === 'complex';
+      classification.intent === 'complex' ||
+      classification.intent === 'billing';
 
     const nextNode = needsReview ? 'humanReview' : 'sendReply';
 
@@ -260,8 +252,16 @@ Guidelines:
 
     // Now process the human's decision
     if (humanDecision.approved) {
+      const update: Partial<EmailAgentStateType> = {
+        thinking: '✅ 人工审核已完成，准备发送回复。',
+      };
+
+      if (humanDecision.editedResponse) {
+        update.responseText = humanDecision.editedResponse;
+      }
+
       return new Command({
-        update: { responseText: humanDecision.editedResponse || state.responseText },
+        update,
         goto: 'sendReply',
       });
     } else {
@@ -270,11 +270,19 @@ Guidelines:
     }
   }
 
-  async function sendReply(state: EmailAgentStateType): Promise<{}> {
+  async function sendReply(state: EmailAgentStateType) {
     // Send the email response
     // Integrate with email service
-    console.log(`Sending reply: ${state.responseText!.substring(0, 100)}...`);
-    return {};
+    const responsePreview = state.responseText?.substring(0, 100) || '(no response text)';
+    console.log(`Sending reply: ${responsePreview}...`);
+
+    const thinking =
+      `📧 正在发送邮件...\n` +
+      `收件人: ${state.senderEmail}\n` +
+      `内容预览: "${responsePreview}..."\n` +
+      `✅ 邮件发送成功！流程结束。`;
+
+    return { thinking };
   }
 
   const workflow = new StateGraph(EmailAgentState)
@@ -299,7 +307,7 @@ Guidelines:
     .addEdge('sendReply', END);
 
   // Compile with checkpointer for persistence
-  const memory = new MemorySaver();
-  const app = workflow.compile({ checkpointer: memory });
+  // If no checkpointer provided, graph runs without persistence (ephemeral)
+  const app = workflow.compile({ checkpointer });
   return app;
 }
